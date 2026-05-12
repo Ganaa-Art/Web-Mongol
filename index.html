@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Ган-Эрдэнэ — Developer · Forex AI Trader · Zweiradmechatroniker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #05070d;
+            --text: #e9f2ff;
+            --muted: #8b9bb8;
+            --cyan: #00fff0;
+            --pink: #ff4fd8;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glow: 0 0 20px rgba(0, 255, 240, 0.3);
+            --radius: 22px;
+        }
+
+        * { box-sizing: border-box; cursor: none; scroll-behavior: smooth; }
+        body {
+            margin: 0; background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif; overflow-x: hidden;
+            background-image: radial-gradient(circle at top, rgba(0,255,240,0.05), transparent 40%);
+        }
+
+        /* --- BACKGROUND & CURSOR --- */
+        .cursor {
+            width: 15px; height: 15px; border: 1px solid var(--cyan); border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 9999; 
+            box-shadow: 0 0 15px var(--cyan); transition: transform 0.1s ease;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1.2rem 5%; backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+        }
+        .logo { font-family: 'Syne'; font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; }
+        .logo span { color: var(--cyan); }
+        
+        .nav-links { display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0; }
+        .nav-links a { 
+            color: var(--muted); text-decoration: none; font-family: 'Space Mono'; 
+            font-size: 0.7rem; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px;
+        }
+        .nav-links a:hover { color: var(--cyan); text-shadow: var(--glow); }
+
+        .lang-toggle { border: 1px solid var(--border); border-radius: 50px; display: flex; padding: 3px; background: rgba(0,0,0,0.3); }
+        .lang-toggle button {
+            border: none; background: none; color: var(--muted); padding: 5px 12px;
+            font: 700 0.6rem 'Space Mono'; border-radius: 50px; cursor: pointer; transition: 0.3s;
+        }
+        .lang-toggle button.active { background: var(--cyan); color: #000; }
+
+        /* --- SECTIONS --- */
+        section { padding: 8rem 8%; position: relative; }
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+        
+        .kicker { font-family: 'Space Mono'; color: var(--cyan); letter-spacing: 4px; font-size: 0.75rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .dot { width: 8px; height: 8px; background: var(--cyan); border-radius: 50%; box-shadow: 0 0 10px var(--cyan); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        h1 { font-family: 'Syne'; font-size: clamp(3rem, 10vw, 7.5rem); line-height: 0.85; margin: 0; letter-spacing: -5px; }
+        .c1 { color: var(--cyan); }
+        .c2 { color: var(--pink); text-shadow: 0 0 30px rgba(255,0,195,0.2); }
+
+        .sub-text { max-width: 600px; color: var(--muted); margin: 2rem 0; font-size: 1.1rem; line-height: 1.8; }
+
+        /* --- STATS --- */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+        .stat-card { background: var(--glass); padding: 1.5rem; border-radius: 18px; border: 1px solid var(--border); backdrop-filter: blur(10px); }
+        .stat-card .n { font-family: 'Syne'; font-size: 2rem; display: block; }
+        .stat-card .l { font-family: 'Space Mono'; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; margin-top: 5px; display: block; }
+
+        /* --- TICKER --- */
+        .ticker-wrap { background: rgba(255,255,255,0.02); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1rem 0; overflow: hidden; }
+        .ticker { display: flex; gap: 4rem; animation: slide 40s linear infinite; white-space: nowrap; font-family: 'Space Mono'; font-size: 0.75rem; }
+        .ticker span { display: flex; gap: 10px; }
+        @keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* --- GRID & CARDS --- */
+        .section-title { font-family: 'Syne'; font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 3rem; letter-spacing: -2px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        
+        .card { 
+            background: var(--glass); border: 1px solid var(--border); padding: 2.5rem; border-radius: var(--radius);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;
+        }
+        .card:hover { border-color: var(--cyan); transform: translateY(-10px); background: rgba(255,255,255,0.05); }
+        .card h3 { font-family: 'Syne'; font-size: 1.4rem; margin: 1rem 0; }
+        .card p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+        .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1.5rem; }
+        .badge { font-family: 'Space Mono'; font-size: 0.6rem; padding: 4px 10px; border-radius: 50px; background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); }
+        .badge.hot { border-color: var(--cyan); color: var(--cyan); }
+
+        /* --- PROJECTS --- */
+        .project-thumb { height: 180px; background: linear-gradient(135deg, #09101d, #100a1b); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 3rem; margin-bottom: 1.5rem; border: 1px solid var(--border); }
+
+        /* --- CONTACT --- */
+        .contact-wrap { display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; }
+        .contact-link { display: flex; align-items: center; gap: 15px; padding: 1.5rem; background: var(--glass); border-radius: 15px; text-decoration: none; color: #fff; border: 1px solid var(--border); margin-bottom: 1rem; transition: 0.3s; }
+        .contact-link:hover { border-color: var(--cyan); background: rgba(0,255,240,0.05); }
+
+        input, textarea {
+            width: 100%; background: var(--glass); border: 1px solid var(--border); border-radius: 14px;
+            padding: 1.2rem; color: #fff; margin-bottom: 1rem; font-family: 'Inter'; transition: 0.3s;
+        }
+        input:focus, textarea:focus { border-color: var(--cyan); outline: none; background: rgba(255,255,255,0.08); }
+        
+        .btn {
+            background: #fff; color: #000; border: none; padding: 1.2rem 2.5rem; font-family: 'Syne';
+            font-weight: 800; border-radius: 50px; text-transform: uppercase; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none;
+        }
+        .btn:hover { background: var(--cyan); box-shadow: var(--glow); transform: scale(1.05); }
+
+        /* --- REVEAL --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 980px) {
+            .contact-wrap { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor" id="cursor"></div>
+
+    <nav>
+        <div class="logo">GAN<span>.</span>ERDENE</div>
+        <ul class="nav-links">
+            <li><a href="#about" data-mn="Миний тухай" data-en="About">Миний тухай</a></li>
+            <li><a href="#skills" data-mn="Чадварууд" data-en="Skills">Чадварууд</a></li>
+            <li><a href="#services" data-mn="Үйлчилгээ" data-en="Services">Үйлчилгээ</a></li>
+            <li><a href="#projects" data-mn="Төслүүд" data-en="Projects">Төслүүд</a></li>
+            <li><a href="#contact" data-mn="Холбоо барих" data-en="Contact">Холбоо барих</a></li>
+        </ul>
+        <div class="lang-toggle">
+            <button id="btnMN" class="active" onclick="setLang('mn')">MN</button>
+            <button id="btnEN" onclick="setLang('en')">EN</button>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="kicker reveal">
+            <div class="dot"></div>
+            <span data-mn="ТӨСӨЛД БЭЛЭН БАЙНА" data-en="AVAILABLE FOR PROJECTS">ТӨСӨЛД БЭЛЭН БАЙНА</span>
+        </div>
+        <h1 class="reveal">
+            <span data-mn="Апп" data-en="App">Апп</span> <span class="c1" data-mn="Хөгжүүлэгч" data-en="Dev">Хөгжүүлэгч</span><br>
+            & <span class="c2">FOREX AI</span>
+        </h1>
+        <p class="sub-text reveal" data-mn="Германд суурилсан Zweiradmechatroniker — програм хангамж, санхүүгийн алгоритм болон нарийн механикийг нэгтгэсэн өвөрмөц профайл." data-en="Germany-based Zweiradmechatroniker — a unique profile merging software development, financial AI, and precision engineering.">
+            Германд суурилсан Zweiradmechatroniker — програм хангамж, санхүүгийн алгоритм болон нарийн механикийг нэгтгэсэн өвөрмөц профайл.
+        </p>
+        <div class="reveal">
+            <a href="#services" class="btn" data-mn="Үйлчилгээ үзэх" data-en="View Services">Үйлчилгээ үзэх</a>
+        </div>
+
+        <div class="stats reveal">
+            <div class="stat-card">
+                <span class="n">3+</span>
+                <span class="l" data-mn="Жил трейдинг" data-en="Years Trading">Жил трейдинг</span>
+            </div>
+            <div class="stat-card">
+                <span class="n">2+</span>
+                <span class="l" data-mn="Хөгжүүлэлтийн хэл" data-en="Dev Languages">Хөгжүүлэлтийн хэл</span>
+            </div>
+            <div class="stat-card">
+                <span class="n">🏍️</span>
+                <span class="l">MECHATRONIKER</span>
+            </div>
+            <div class="stat-card">
+                <span class="n">AI.</span>
+                <span class="l" data-mn="Системүүд" data-en="Systems">Системүүд</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <span>EUR/USD <font color="#00f5a0">1.0842 ▲</font></span> <span>XAU/USD <font color="#00f5a0">2,341.5 ▲</font></span> <span>BTC/USD <font color="#00f5a0">67,420 ▲</font></span> <span>GBP/USD <font color="#ff5c7c">1.2715 ▼</font></span> <span>G-TRADER AI: RUNNING...</span>
+            <span>EUR/USD <font color="#00f5a0">1.0842 ▲</font></span> <span>XAU/USD <font color="#00f5a0">2,341.5 ▲</font></span> <span>BTC/USD <font color="#00f5a0">67,420 ▲</font></span> <span>GBP/USD <font color="#ff5c7c">1.2715 ▼</font></span> <span>G-TRADER AI: RUNNING...</span>
+        </div>
+    </div>
+
+    <section id="skills">
+        <h2 class="section-title reveal" data-mn="Үндсэн чадварууд" data-en="Core Skills">Үндсэн чадварууд</h2>
+        <div class="grid">
+            <div class="card reveal">
+                <span style="font-size: 2rem;">📱</span>
+                <h3 data-mn="Апп хөгжүүлэлт" data-en="App Development">Апп хөгжүүлэлт</h3>
+                <p data-mn="React, Flutter болон Node.js ашиглан орчин үеийн апп бүтээх." data-en="Building modern apps using React, Flutter, and Node.js.">React, Flutter болон Node.js ашиглан орчин үеийн апп бүтээх.</p>
+                <div class="badge-row">
+                    <span class="badge">React</span> <span class="badge">Node.js</span> <span class="badge">Flutter</span>
+                </div>
+            </div>
+            <div class="card reveal">
+                <span style="font-size: 2rem;">🤖</span>
+                <h3 data-mn="AI Трейдинг" data-en="AI Trading">AI Трейдинг</h3>
+                <p data-mn="Python болон MQL5 ашиглан автоматжуулсан арилжааны систем хөгжүүлэх." data-en="Developing automated trading systems using Python and MQL5.">Python болон MQL5 ашиглан автоматжуулсан арилжааны систем хөгжүүлэх.</p>
+                <div class="badge-row">
+                    <span class="badge hot">MQL5</span> <span class="badge hot">Python</span> <span class="badge">ML</span>
+                </div>
+            </div>
+            <div class="card reveal">
+                <span style="font-size: 2rem;">⚙️</span>
+                <h3 data-mn="Автоматжуулалт" data-en="Automation">Автоматжуулалт</h3>
+                <p data-mn="Бизнесийн процессыг хөнгөвчлөх Telegram боот болон скриптүүд." data-en="Telegram bots and scripts to streamline business processes.">Бизнесийн процессыг хөнгөвчлөх Telegram боот болон скриптүүд.</p>
+                <div class="badge-row">
+                    <span class="badge">Bot API</span> <span class="badge">Webhooks</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <h2 class="section-title reveal" data-mn="Сүүлийн ажлууд" data-en="Recent Work">Сүүлийн ажлууд</h2>
+        <div class="grid">
+            <div class="card reveal">
+                <div class="project-thumb">📡</div>
+                <h3>G-Trader Signals</h3>
+                <p data-mn="AI-д суурилсан Forex сигнал түгээх Telegram систем." data-en="AI-powered Forex signal distribution system via Telegram.">AI-д суурилсан Forex сигнал түгээх Telegram систем.</p>
+                <div class="badge-row"><span class="badge hot">Live</span><span class="badge">Forex</span></div>
+            </div>
+            <div class="card reveal">
+                <div class="project-thumb" style="background: linear-gradient(135deg, #1a0a1b, #0a1a1a);">🤖</div>
+                <h3 data-mn="AI Trading Algorithm" data-en="AI Trading Algorithm">AI Trading Algorithm</h3>
+                <p data-mn="MT5 дээрх машин сургалтын загвар таних алгоритм." data-en="Machine learning pattern recognition algorithm for MT5.">MT5 дээрх машин сургалтын загвар таних алгоритм.</p>
+                <div class="badge-row"><span class="badge">MQL5</span><span class="badge">Data Science</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="contact-wrap">
+            <div class="reveal">
+                <h2 class="section-title" style="margin-bottom: 1rem;" data-mn="Хамтран ажиллая" data-en="Let's Work">Хамтран ажиллая</h2>
+                <p class="sub-text" data-mn="Танд төсөл байна уу? Эсвэл зүгээр л ярилцахыг хүсэж байна уу? Холбоо бариарай." data-en="Have a project? Or just want to chat? Reach out to me.">Танд төсөл байна уу? Эсвэл зүгээр л ярилцахыг хүсэж байна уу? Холбоо бариарай.</p>
+                
+                <a href="https://t.me/G_Trader" class="contact-link">
+                    <span style="font-size: 1.5rem;">✈️</span>
+                    <div><span style="display:block; font-size: 0.6rem; color:var(--muted);">TELEGRAM</span>@G-Trader</div>
+                </a>
+                <div class="contact-link">
+                    <span style="font-size: 1.5rem;">📍</span>
+                    <div><span style="display:block; font-size: 0.6rem; color:var(--muted);">LOCATION</span>Germany 🇩🇪</div>
+                </div>
+            </div>
+            <div class="card reveal">
+                <form onsubmit="return false;">
+                    <input type="text" id="name" data-mn-ph="Таны нэр" data-en-ph="Your Name" placeholder="Таны нэр">
+                    <input type="email" id="email" data-mn-ph="И-мэйл эсвэл Telegram" data-en-ph="Email or Telegram" placeholder="И-мэйл эсвэл Telegram">
+                    <textarea id="message" rows="5" data-mn-ph="Зурвас" data-en-ph="Message" placeholder="Зурвас"></textarea>
+                    <button class="btn" style="width: 100%; justify-content: center;" onclick="alert('Sent!')" data-mn="Илгээх" data-en="Send Message">Илгээх</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer style="padding: 4rem; text-align: center; border-top: 1px solid var(--border); font-family: 'Space Mono'; font-size: 0.7rem; color: var(--muted);">
+        &copy; 2026 G-ERDENE. BLACK · NEON · CYBER.
+    </footer>
+
+    <script>
+        // CURSOR
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 7 + 'px';
+            cursor.style.top = e.clientY - 7 + 'px';
+        });
+
+        // REVEAL
+        const reveal = () => {
+            document.querySelectorAll('.reveal').forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('active');
+            });
+        };
+        window.addEventListener('scroll', reveal);
+        window.onload = reveal;
+
+        // LANGUAGE
+        function setLang(lang) {
+            document.getElementById('btnMN').classList.toggle('active', lang === 'mn');
+            document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+            
+            document.querySelectorAll('[data-mn]').forEach(el => {
+                el.textContent = el.getAttribute(`data-${lang}`);
+            });
+
+            document.querySelectorAll('[data-mn-ph]').forEach(el => {
+                el.placeholder = el.getAttribute(`data-${lang}-ph`);
+            });
+        }
+    </script>
+</body>
+</html>
