@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Izeel.mn — Оюутны микро зээл</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0EA5E9; --primary-dark: #0369A1;
+      --accent: #10B981; --accent-dark: #059669;
+      --bg: #FFFFFF; --bg-soft: #F8FAFC;
+      --text: #0F172A; --text-muted: #64748B; --border: #E2E8F0;
+    }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); }
+    .page { display: none; } .page.active { display: block; } .hidden { display: none !important; }
+
+    .iz-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 100; }
+    .iz-logo { font-size: 22px; font-weight: 800; color: var(--primary); }
+    .iz-logo span { color: var(--accent); }
+    .iz-nav-btn { font-size: 13px; font-weight: 700; padding: 8px 18px; border: 1.5px solid var(--primary); border-radius: 30px; background: transparent; color: var(--primary); cursor: pointer; transition: all .18s; }
+    .iz-nav-btn:hover { background: var(--primary); color: #fff; }
+
+    .iz-hero { padding: 44px 24px 36px; background: linear-gradient(135deg,#E0F2FE,#D1FAE5); text-align: center; position: relative; overflow: hidden; }
+    .iz-hero::before { content:'₮'; font-size:220px; font-weight:900; position:absolute; top:-50px; right:-30px; color:rgba(14,165,233,.07); pointer-events:none; }
+    .iz-badge { display:inline-block; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:5px 16px; border-radius:30px; background:rgba(14,165,233,.14); color:var(--primary-dark); margin-bottom:18px; }
+    .iz-hero h1 { font-size:30px; font-weight:800; line-height:1.2; color:#0F172A; margin-bottom:12px; }
+    .iz-hero h1 span { color:var(--primary); }
+    .iz-hero p { font-size:14px; color:#475569; margin-bottom:28px; line-height:1.6; }
+    .iz-cta { display:inline-block; padding:14px 36px; background:var(--primary); color:#fff; border-radius:30px; font-size:16px; font-weight:700; font-family:'Nunito',sans-serif; border:none; cursor:pointer; box-shadow:0 6px 20px rgba(14,165,233,.35); transition:all .18s; }
+    .iz-cta:hover { background:var(--primary-dark); transform:translateY(-2px); }
+
+    .iz-features { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; padding:24px 16px; }
+    .iz-feat-card { background:var(--bg-soft); border:1px solid var(--border); border-radius:14px; padding:16px 12px; text-align:center; }
+    .iz-feat-icon { font-size:24px; margin-bottom:8px; }
+    .iz-feat-card h3 { font-size:13px; font-weight:700; margin-bottom:4px; }
+    .iz-feat-card p { font-size:11px; color:var(--text-muted); line-height:1.4; }
+
+    .iz-section { padding:24px 20px; }
+    .iz-section-title { font-size:20px; font-weight:800; margin-bottom:4px; }
+    .iz-section-sub { font-size:13px; color:var(--text-muted); margin-bottom:20px; line-height:1.5; }
+
+    .iz-calc-card { background:var(--bg); border:1.5px solid var(--border); border-radius:14px; padding:24px 20px; box-shadow:0 2px 16px rgba(0,0,0,.06); }
+    .iz-amount-display { text-align:center; margin-bottom:20px; }
+    .iz-amount-display .label { font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+    .iz-amount-display .amount { font-size:40px; font-weight:800; color:var(--primary); letter-spacing:-1px; }
+
+    input[type=range] { width:100%; height:6px; accent-color:var(--primary); cursor:pointer; }
+    .iz-slider-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-top:6px; }
+
+    .iz-duration-row { display:flex; gap:8px; margin:18px 0; }
+    .iz-dur-btn { flex:1; padding:10px 0; border-radius:10px; font-size:12px; font-weight:700; font-family:'Nunito',sans-serif; border:1.5px solid var(--border); background:var(--bg-soft); color:var(--text-muted); cursor:pointer; transition:all .15s; }
+    .iz-dur-btn:hover { border-color:var(--primary); color:var(--primary); }
+    .iz-dur-btn.selected { background:var(--primary); color:#fff; border-color:var(--primary); }
+
+    .iz-repay-box { background:linear-gradient(135deg,#F0FDF4,#EFF6FF); border:1px solid #BFDBFE; border-radius:12px; padding:16px 18px; margin-top:4px; }
+    .iz-repay-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; }
+    .iz-repay-row.total-row { border-top:1px dashed #BFDBFE; margin-top:4px; padding-top:10px; }
+    .iz-repay-label { font-size:13px; color:#475569; }
+    .iz-repay-value { font-size:14px; font-weight:700; color:#0F172A; }
+    .iz-repay-total { font-size:18px; color:var(--accent-dark); }
+
+    .iz-apply-btn { display:block; width:100%; margin-top:18px; padding:15px; background:var(--accent); color:#fff; font-size:16px; font-weight:700; font-family:'Nunito',sans-serif; border:none; border-radius:12px; cursor:pointer; transition:all .18s; }
+    .iz-apply-btn:hover { background:var(--accent-dark); }
+
+    .iz-steps { padding:0 20px 40px; }
+    .iz-step { display:flex; gap:16px; margin-bottom:20px; align-items:flex-start; }
+    .iz-step-num { width:36px; height:36px; border-radius:50%; flex-shrink:0; background:var(--primary); color:#fff; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+    .iz-step h4 { font-size:15px; font-weight:700; margin-bottom:3px; }
+    .iz-step p { font-size:13px; color:var(--text-muted); line-height:1.5; }
+
+    .iz-auth-wrap { padding:24px 20px; max-width:480px; margin:0 auto; }
+    .iz-tabs { display:flex; background:var(--bg-soft); border-radius:12px; padding:4px; margin-bottom:24px; border:1px solid var(--border); }
+    .iz-tab { flex:1; padding:10px; border-radius:10px; font-size:14px; font-weight:700; font-family:'Nunito',sans-serif; border:none; background:transparent; color:var(--text-muted); cursor:pointer; transition:all .15s; }
+    .iz-tab.active { background:var(--bg); color:var(--primary); box-shadow:0 1px 6px rgba(0,0,0,.1); }
+
+    .iz-form-group { margin-bottom:16px; }
+    .iz-form-group label { display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:6px; letter-spacing:.5px; }
+    .iz-form-group input, .iz-form-group select { width:100%; padding:12px 16px; border:1.5px solid var(--border); border-radius:10px; font-size:15px; font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); outline:none; transition:border .15s,box-shadow .15s; }
+    .iz-form-group input:focus, .iz-form-group select:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(14,165,233,.12); }
+    .iz-form-group input.error { border-color:#EF4444; }
+    .iz-error-msg { font-size:12px; color:#EF4444; margin-top:5px; display:none; }
+    .iz-error-msg.show { display:block; }
+
+    .iz-submit-btn { width:100%; padding:14px; background:var(--primary); color:#fff; font-size:15px; font-weight:700; font-family:'Nunito',sans-serif; border:none; border-radius:12px; cursor:pointer; margin-top:8px; transition:all .18s; }
+    .iz-submit-btn:hover { background:var(--primary-dark); }
+
+    .iz-otp-info { background:#EFF6FF; border:1px solid #BFDBFE; border-radius:10px; padding:14px 16px; font-size:13px; color:#1E40AF; margin-bottom:16px; display:flex; align-items:center; gap:10px; line-height:1.5; }
+    .iz-back-link { text-align:center; margin-top:16px; font-size:13px; color:var(--text-muted); }
+    .iz-back-link a { color:var(--primary); cursor:pointer; font-weight:700; }
+    .iz-back-link a:hover { text-decoration:underline; }
+
+    .iz-success-box { text-align:center; padding:48px 20px; }
+    .iz-success-icon { font-size:64px; margin-bottom:16px; display:block; }
+    .iz-success-box h2 { font-size:22px; font-weight:800; margin-bottom:10px; }
+    .iz-success-box p { font-size:14px; color:var(--text-muted); line-height:1.6; }
+
+    @media(max-width:400px) {
+      .iz-hero h1 { font-size:24px; }
+      .iz-amount-display .amount { font-size:32px; }
+      .iz-dur-btn { font-size:11px; padding:8px 0; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- НҮҮР ХУУДАС -->
+  <div id="page-home" class="page active">
+    <header class="iz-header">
+      <div class="iz-logo">Izeel<span>.mn</span></div>
+      <button class="iz-nav-btn" onclick="showAuth()">Нэвтрэх</button>
+    </header>
+
+    <section class="iz-hero">
+      <div class="iz-badge">🎓 Оюутны санхүүгийн тусламж</div>
+      <h1>Шууд зээл<br><span>тань гарт</span> байна</h1>
+      <p>Баталгаажуулалт хурдан · Шимтгэл ил тод · 30 минутад шийдэл</p>
+      <button class="iz-cta" onclick="showAuth()">Зээл хүсэх →</button>
+    </section>
+
+    <div class="iz-features">
+      <div class="iz-feat-card"><div class="iz-feat-icon">⚡</div><h3>Хурдан</h3><p>30 минутад шийдвэр</p></div>
+      <div class="iz-feat-card"><div class="iz-feat-icon">🔒</div><h3>Найдвартай</h3><p>Мэдээлэл нууцлагдсан</p></div>
+      <div class="iz-feat-card"><div class="iz-feat-icon">💸</div><h3>Ил тод</h3><p>Нуугдмал хураамжгүй</p></div>
+    </div>
+
+    <section class="iz-section">
+      <div class="iz-section-title">Зээлийн тооцоолуур</div>
+      <div class="iz-section-sub">Хэдийг зээлэхийг шилж, эргэн төлөлтийг шууд харна уу</div>
+      <div class="iz-calc-card">
+        <div class="iz-amount-display">
+          <div class="label">Зээлийн дүн</div>
+          <div class="amount">₮<span id="amt-val">50,000</span></div>
+        </div>
+        <div style="margin-bottom:8px">
+          <input type="range" id="loan-slider" min="10000" max="100000" step="5000" value="50000" oninput="updateCalc()" />
+          <div class="iz-slider-labels"><span>₮10,000</span><span>₮100,000</span></div>
+        </div>
+        <div class="iz-duration-row">
+          <button class="iz-dur-btn selected" onclick="selectDur(this,7)">7 хоног</button>
+          <button class="iz-dur-btn" onclick="selectDur(this,14)">14 хоног</button>
+          <button class="iz-dur-btn" onclick="selectDur(this,21)">21 хоног</button>
+          <button class="iz-dur-btn" onclick="selectDur(this,30)">30 хоног</button>
+        </div>
+        <div class="iz-repay-box">
+          <div class="iz-repay-row"><span class="iz-repay-label">Үндсэн зээл</span><span class="iz-repay-value" id="r-principal">₮50,000</span></div>
+          <div class="iz-repay-row"><span class="iz-repay-label">Хоногийн хүү (1.5%)</span><span class="iz-repay-value" id="r-interest">₮5,250</span></div>
+          <div class="iz-repay-row total-row"><span class="iz-repay-label">Нийт эргэн төлөх</span><span class="iz-repay-value iz-repay-total" id="r-total">₮55,250</span></div>
+        </div>
+        <button class="iz-apply-btn" onclick="showAuth()">Зээл хүсэх →</button>
+      </div>
+    </section>
+
+    <section class="iz-steps">
+      <div class="iz-section-title" style="margin-bottom:16px">Хэрхэн ажилладаг вэ?</div>
+      <div class="iz-step"><div class="iz-step-num">1</div><div><h4>Бүртгүүлэх</h4><p>Оюутны код, регистр, утасны дугаараа оруулна уу</p></div></div>
+      <div class="iz-step"><div class="iz-step-num">2</div><div><h4>Зээл хүсэх</h4><p>Дүн болон хугацаагаа сонгоод хүсэлт илгээнэ үү</p></div></div>
+      <div class="iz-step"><div class="iz-step-num">3</div><div><h4>Мөнгөө авах</h4><p>30 минут дотор таны данс руу шилжүүлнэ</p></div></div>
+    </section>
+  </div>
+
+  <!-- НЭВТРЭХ / БҮРТГҮҮЛЭХ -->
+  <div id="page-auth" class="page">
+    <header class="iz-header">
+      <div class="iz-logo">Izeel<span>.mn</span></div>
+      <button class="iz-nav-btn" onclick="showHome()">← Буцах</button>
+    </header>
+    <div class="iz-auth-wrap">
+      <div class="iz-tabs">
+        <button class="iz-tab active" id="tab-login" onclick="switchTab('login')">Нэвтрэх</button>
+        <button class="iz-tab" id="tab-register" onclick="switchTab('register')">Бүртгүүлэх</button>
+      </div>
+
+      <div id="form-login">
+        <div class="iz-form-group"><label>УТАСНЫ ДУГААР</label><input type="tel" id="login-phone" placeholder="9900 0000" maxlength="8"/><div class="iz-error-msg" id="err-login-phone">Зөв утасны дугаар оруулна уу</div></div>
+        <div class="iz-form-group"><label>НУУЦ ҮГ</label><input type="password" id="login-pass" placeholder="••••••"/><div class="iz-error-msg" id="err-login-pass">Нууц үгээ оруулна уу</div></div>
+        <button class="iz-submit-btn" onclick="doLogin()">Нэвтрэх</button>
+        <div class="iz-back-link">Бүртгэлгүй юу? <a onclick="switchTab('register')">Бүртгүүлэх</a></div>
+      </div>
+
+      <div id="form-register" class="hidden">
+        <div id="reg-step1">
+          <div class="iz-form-group"><label>ОЮУТНЫ КОД</label><input type="text" id="reg-student-id" placeholder="жнь: 2021001234"/><div class="iz-error-msg" id="err-student-id">Оюутны кодоо оруулна уу</div></div>
+          <div class="iz-form-group"><label>СУРГУУЛИЙН НЭР</label>
+            <select id="reg-school">
+              <option value="">Сургуулиа сонгоно уу</option>
+              <option>Монгол Улсын Их Сургууль (МУИС)</option>
+              <option>Шинжлэх Ухаан Технологийн Их Сургууль (ШУТИС)</option>
+              <option>Монгол Улсын Боловсролын Их Сургууль (МУБИС)</option>
+              <option>Хүмүүнлэгийн Ухааны Их Сургууль (ХУИС)</option>
+              <option>Эрдэнэт Технологийн Дээд Сургууль</option>
+              <option>Бусад</option>
+            </select>
+            <div class="iz-error-msg" id="err-school">Сургуулиа сонгоно уу</div>
+          </div>
+          <div class="iz-form-group"><label>РЕГИСТРИЙН ДУГААР</label><input type="text" id="reg-regno" placeholder="жнь: УА12345678" maxlength="10"/><div class="iz-error-msg" id="err-regno">Зөв регистрийн дугаар оруулна уу</div></div>
+          <div class="iz-form-group"><label>УТАСНЫ ДУГААР</label><input type="tel" id="reg-phone" placeholder="9900 0000" maxlength="8"/><div class="iz-error-msg" id="err-reg-phone">Зөв утасны дугаар оруулна уу</div></div>
+          <div class="iz-form-group"><label>НУУЦ ҮГ</label><input type="password" id="reg-pass" placeholder="Хамгийн багадаа 6 тэмдэгт"/><div class="iz-error-msg" id="err-reg-pass">Хамгийн багадаа 6 тэмдэгт оруулна уу</div></div>
+          <button class="iz-submit-btn" onclick="doRegister()">Баталгаажуулах код авах</button>
+        </div>
+        <div id="reg-step2" class="hidden">
+          <div class="iz-otp-info">📱 <span id="otp-phone-display">дугаарт 4 оронтой код илгээлээ</span></div>
+          <div class="iz-form-group"><label>БАТАЛГААЖУУЛАХ КОД</label><input type="number" id="reg-otp" placeholder="0000" style="font-size:24px;text-align:center;letter-spacing:10px"/><div class="iz-error-msg" id="err-otp">Зөв код оруулна уу (туршилтаар: 1234)</div></div>
+          <button class="iz-submit-btn" onclick="doVerifyOtp()">Бүртгэл дуусгах</button>
+          <div class="iz-back-link">Код ирсэнгүй юу? <a onclick="alert('Код дахин илгээгдлээ!')">Дахин илгээх</a></div>
+        </div>
+      </div>
+
+      <div id="auth-success" class="hidden">
+        <div class="iz-success-box">
+          <span class="iz-success-icon">✅</span>
+          <h2>Амжилттай бүртгэгдлээ!</h2>
+          <p>Таны бүртгэл баталгаажлаа.<br>Одоо зээл хүсэх боломжтой.</p>
+          <button class="iz-apply-btn" style="margin-top:24px" onclick="showHome()">Нүүр хуудас руу буцах</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+  const RATE = 0.015;
+  let days = 7;
+  function fmt(n){return Math.round(n).toLocaleString('mn-MN');}
+  function updateCalc(){
+    const a=parseInt(document.getElementById('loan-slider').value);
+    const i=Math.round(a*RATE*days);
+    document.getElementById('amt-val').textContent=fmt(a);
+    document.getElementById('r-principal').textContent='₮'+fmt(a);
+    document.getElementById('r-interest').textContent='₮'+fmt(i);
+    document.getElementById('r-total').textContent='₮'+fmt(a+i);
+  }
+  function selectDur(btn,d){days=d;document.querySelectorAll('.iz-dur-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');updateCalc();}
+  function showAuth(){document.getElementById('page-home').classList.remove('active');document.getElementById('page-auth').classList.add('active');window.scrollTo(0,0);}
+  function showHome(){document.getElementById('page-home').classList.add('active');document.getElementById('page-auth').classList.remove('active');window.scrollTo(0,0);}
+  function switchTab(t){
+    ['login','register'].forEach(x=>{
+      document.getElementById('tab-'+x).classList.toggle('active',x===t);
+      document.getElementById('form-'+x).classList.toggle('hidden',x!==t);
+    });
+    document.getElementById('auth-success').classList.add('hidden');
+    if(t==='register'){document.getElementById('reg-step1').classList.remove('hidden');document.getElementById('reg-step2').classList.add('hidden');}
+  }
+  function setErr(id,on){const e=document.getElementById(id);e.classList.toggle('show',on);const i=e.previousElementSibling;if(i&&i.tagName==='INPUT')i.classList.toggle('error',on);}
+  function doLogin(){
+    const p=document.getElementById('login-phone').value.trim();
+    const pw=document.getElementById('login-pass').value.trim();
+    let ok=true;
+    if(!/^\d{8}$/.test(p)){setErr('err-login-phone',true);ok=false;}else setErr('err-login-phone',false);
+    if(!pw){setErr('err-login-pass',true);ok=false;}else setErr('err-login-pass',false);
+    if(ok){document.getElementById('form-login').classList.add('hidden');document.getElementById('auth-success').classList.remove('hidden');}
+  }
+  function doRegister(){
+    const sid=document.getElementById('reg-student-id').value.trim();
+    const sc=document.getElementById('reg-school').value;
+    const rn=document.getElementById('reg-regno').value.trim();
+    const ph=document.getElementById('reg-phone').value.trim();
+    const pw=document.getElementById('reg-pass').value.trim();
+    let ok=true;
+    if(!sid){setErr('err-student-id',true);ok=false;}else setErr('err-student-id',false);
+    if(!sc){setErr('err-school',true);ok=false;}else setErr('err-school',false);
+    if(rn.length<8){setErr('err-regno',true);ok=false;}else setErr('err-regno',false);
+    if(!/^\d{8}$/.test(ph)){setErr('err-reg-phone',true);ok=false;}else setErr('err-reg-phone',false);
+    if(pw.length<6){setErr('err-reg-pass',true);ok=false;}else setErr('err-reg-pass',false);
+    if(ok){
+      document.getElementById('otp-phone-display').textContent='+976 '+ph.substring(0,4)+' '+ph.substring(4)+' дугаарт 4 оронтой код илгээлээ';
+      document.getElementById('reg-step1').classList.add('hidden');
+      document.getElementById('reg-step2').classList.remove('hidden');
+    }
+  }
+  function doVerifyOtp(){
+    const o=document.getElementById('reg-otp').value.trim();
+    if(o!=='1234'){setErr('err-otp',true);return;}
+    setErr('err-otp',false);
+    document.getElementById('form-register').classList.add('hidden');
+    document.getElementById('auth-success').classList.remove('hidden');
+  }
+  updateCalc();
+</script>
+</body>
+</html>
